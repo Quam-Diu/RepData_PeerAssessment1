@@ -1,7 +1,13 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: 'Reproducible Research: Peer Assessment 1'
+output:
+  html_document:
+    keep_md: yes
+    self_contained: no
+  pdf_document: default
+---
 
-This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University  
-and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, specifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.
+This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, specifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.
 
 The data was downloaded from the following GitHub repository on may 16th, 2015, at 10:35 am (GMT+6):
 
@@ -38,6 +44,7 @@ The **ggplot2** (which is my choice to make the plots) and **dplyr** libraries a
         library(dplyr)
         library(ggplot2)
 ```
+
 First, the sum of the the total steps for each day is calculated. For this calculation a wide number of functions and / or packages could be used. After observing that some methods (for example the function **aggregate**) return a 0 for days in which all values were NA, my choice was the library **dplyr**, which excludes those days from the resulting dataframe. This is specially important for the calculations of the mean and the median (evidently to include those zeros would bring different results).  
 
 Other point of interest could be the choice of the parameter **bindwidht = 700**, which simply is one approximation to the default value range / 30. I replaced this default value to avoid a warning message.
@@ -59,15 +66,6 @@ Other point of interest could be the choice of the parameter **bindwidht = 700**
 ```
 
 We should now calculate the mean and the median of this sample:
-
-- **Mean: ** Is the number that separates the higher half of a data sample from the lower half, is calculated by:
-$$Mean=\frac{1}{n}\sum_{i=1}^{n} x_i$$
-
-- **Median: ** Is a real number m that, for any probability distribution, satisfies the inequalities:
-
-$$\operatorname{P}(X\leq m) \geq \frac{1}{2}\text{ and }\operatorname{P}(X\geq m) \geq \frac{1}{2}\,\!$$
-
-These statistics are calculated using the following R code:
 
 
 ```r
@@ -164,6 +162,7 @@ And I used the same code as before to calculate the mean and the median of this 
         new.mean <- format(new.stats$mean, digits= 2, big.mark=",", scientific=FALSE)
         new.median <- format(new.stats$median, digits= 2, big.mark=",", scientific=FALSE)
 ```
+
 From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Because of the chosen method of replacement for the NAs, this results are the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -184,4 +183,3 @@ Finally, with the new dataset created for the previous question
                                 geom_line(colour="darkgray")+ 
                                 facet_grid(weekday ~ .)
 ```
-

@@ -1,128 +1,287 @@
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="pandoc" />
+<title>Loading and preprocessing the data</title>
 
-
-
-<title>Reproducible Research: Peer Assessment 1</title>
-
-<script src="PA1_template_files/jquery-1.11.0/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link href="PA1_template_files/bootstrap-2.3.2/css/bootstrap.min.css" rel="stylesheet" />
-<link href="PA1_template_files/bootstrap-2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" />
-<script src="PA1_template_files/bootstrap-2.3.2/js/bootstrap.min.js"></script>
-
-<style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="PA1_template_files/highlight/default.css"
-      type="text/css" />
-<script src="PA1_template_files/highlight/highlight.js"></script>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
-}
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
 </script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
 
 
 
 </head>
 
 <body>
+<p>This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, specifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.</p>
 
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>
-<div class="container-fluid main-container">
-
-
-<div id="header">
-<h1 class="title">Reproducible Research: Peer Assessment 1</h1>
-</div>
-
-
-<p>This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University<br />and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, specifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.</p>
 <p>The data was downloaded from the following GitHub repository on may 16th, 2015, at 10:35 am (GMT+6):</p>
+
 <p><a href="https://github.com/rdpeng/RepData_PeerAssessment1/blob/master/activity.zip">https://github.com/rdpeng/RepData_PeerAssessment1/blob/master/activity.zip</a></p>
+
 <p>It contains the following variables (as described in the same repository):</p>
+
 <ul>
 <li><p>steps: Number of steps taking in a 5-minute interval (missing values are coded as NA)</p></li>
 <li><p>date: The date on which the measurement was taken in YYYY-MM-DD format</p></li>
 <li><p>interval: Identifier for the 5-minute interval in which measurement was taken</p></li>
 </ul>
+
 <p>The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations on it.</p>
-<p>To complete this assignment five questions / problems should be resolved, beginning with the loading in the data to be analyzed into R.</p>
-<div id="loading-and-preprocessing-the-data" class="section level2">
+
+<p>To complete this assignment five questions / problems should be resolved, beginning with the loading in the data to be analyzed into R. </p>
+
 <h2>Loading and preprocessing the data</h2>
-<p>Once downloaded, the data is stored on the R working directory, then the following code is used to load it into R and store into an R variable called “act.Data”. <strong>Note:</strong> This and the following code was written using R version 3.1.2, and R-Studio version 0.98, running on MacOS X 10.1.1.</p>
-<pre class="r"><code>        act.data &lt;- read.csv(unzip(&quot;activity.zip&quot;))</code></pre>
-</div>
-<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
+
+<p>Once downloaded, the data is stored on the R working directory, then the following code is used to load it into R and store into an R variable called &ldquo;act.Data&rdquo;. 
+<strong>Note:</strong> This and the following code was written using R version 3.1.2, and R-Studio version 0.98, running on MacOS X 10.1.1.</p>
+
+<pre><code class="r">        act.data &lt;- read.csv(unzip(&quot;activity.zip&quot;))
+</code></pre>
+
 <h2>What is mean total number of steps taken per day?</h2>
+
 <p>The <strong>ggplot2</strong> (which is my choice to make the plots) and <strong>dplyr</strong> libraries are required to be installed and loaded in order to run the code properly. The following code is used to load these libraries.</p>
-<pre class="r"><code>        library(dplyr)
-        library(ggplot2)</code></pre>
-<p>First, the sum of the the total steps for each day is calculated. For this calculation a wide number of functions and / or packages could be used. After observing that some methods (for example the function <strong>aggregate</strong>) return a 0 for days in which all values were NA, my choice was the library <strong>dplyr</strong>, which excludes those days from the resulting dataframe. This is specially important for the calculations of the mean and the median (evidently to include those zeros would bring different results).</p>
+
+<pre><code class="r">        library(dplyr)
+        library(ggplot2)
+</code></pre>
+
+<p>First, the sum of the the total steps for each day is calculated. For this calculation a wide number of functions and / or packages could be used. After observing that some methods (for example the function <strong>aggregate</strong>) return a 0 for days in which all values were NA, my choice was the library <strong>dplyr</strong>, which excludes those days from the resulting dataframe. This is specially important for the calculations of the mean and the median (evidently to include those zeros would bring different results).  </p>
+
 <p>Other point of interest could be the choice of the parameter <strong>bindwidht = 700</strong>, which simply is one approximation to the default value range / 30. I replaced this default value to avoid a warning message.</p>
-<pre class="r"><code>        ## 1) Calculates the total number of steps per day
+
+<pre><code class="r">        ## 1) Calculates the total number of steps per day
         ## Days with no data recorded (only NAs on the steps column) were exclude
         steps.total &lt;- act.data %&gt;% 
                         filter(!is.na(steps)) %&gt;% 
                         group_by(date) %&gt;% 
                         summarize(total=sum(steps))
-        
+
         ## 2) Creates the histogram
         totalSteps.plot &lt;- ggplot(steps.total)+
                                 geom_histogram(aes(x=total), alpha=0.8, fill=&quot;red&quot;, colour=&quot;white&quot;, binwidth=700)+
                                 labs(title=&quot;Histogram - Total steps per day&quot;)+
-                                labs(x=&quot;Total steps&quot;, y=&quot;Number of days&quot;)</code></pre>
+                                labs(x=&quot;Total steps&quot;, y=&quot;Number of days&quot;)
+</code></pre>
+
 <p>We should now calculate the mean and the median of this sample:</p>
-<ul>
-<li><p><strong>Mean: </strong> Is the number that separates the higher half of a data sample from the lower half, is calculated by: <span class="math">\[Mean=\frac{1}{n}\sum_{i=1}^{n} x_i\]</span></p></li>
-<li><p><strong>Median: </strong> Is a real number m that, for any probability distribution, satisfies the inequalities:</p></li>
-</ul>
-<p><span class="math">\[\operatorname{P}(X\leq m) \geq \frac{1}{2}\text{ and }\operatorname{P}(X\geq m) \geq \frac{1}{2}\,\!\]</span></p>
-<p>These statistics are calculated using the following R code:</p>
-<pre class="r"><code>        stats &lt;- steps.total %&gt;% 
+
+<pre><code class="r">        stats &lt;- steps.total %&gt;% 
                         summarize(mean=mean(total), median=median(total))
         mean &lt;- format(stats$mean, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
-        median &lt;- format(stats$median, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)</code></pre>
+        median &lt;- format(stats$median, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
+</code></pre>
+
 <p>From were we obtain a mean of 10,766 and a median of 10,765 steps per day.</p>
-</div>
-<div id="what-is-the-average-daily-activity-pattern" class="section level2">
+
 <h2>What is the average daily activity pattern?</h2>
+
 <p>To answer this question, the average steps per time interval should be calculated first, and then ploted versus the time interval.</p>
-<pre class="r"><code>        ## 1) Calculate the average steps per time interval, excluding data with NA values
+
+<pre><code class="r">        ## 1) Calculate the average steps per time interval, excluding data with NA values
         steps.mean &lt;- act.data %&gt;% 
                         filter(!is.na(steps)) %&gt;% 
                         group_by(interval) %&gt;% 
                         summarize(mean=mean(steps))
         steps.mean &lt;- steps.mean %&gt;% 
                         mutate(color = (max(mean) == mean))
-        
+
         ## 2) Creates the plot
         ## 2.1) Finds the maximum and converts its time interval to 24H format
         maxValue &lt;- steps.mean[steps.mean$mean==max(steps.mean$mean),]
         hour &lt;- as.integer(maxValue$interval/60)
         minute &lt;- 60*(maxValue$interval/60 - hour)
         time&lt;-paste(hour,&quot;:&quot;, minute, &quot;, &quot;, format(maxValue$mean, digits=1), sep=&quot;&quot;)
-        
+
         ## 2.2) Creates the plot
         meanSteps.plot &lt;- ggplot(steps.mean, aes(x=interval, y=mean))+
                                 geom_line(colour=&quot;darkgray&quot;)+
@@ -130,79 +289,75 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
                                 guides(color=FALSE)+
                                 labs(title=&quot;Mean steps per time interval&quot;)+
                                 labs(x=&quot;Time interval&quot;, y=&quot;Mean steps&quot;)+
-        
+
         ## 2.3) Highlights the maximum value
                                 scale_color_manual(values = c(NA, &quot;red&quot;))+
-                                annotate(&quot;text&quot;, x=20+maxValue$interval, y=maxValue$mean, label=time, colour=&quot;darkred&quot;, size=3, hjust=0)</code></pre>
+                                annotate(&quot;text&quot;, x=20+maxValue$interval, y=maxValue$mean, label=time, colour=&quot;darkred&quot;, size=3, hjust=0)
+</code></pre>
+
 <p>As we can see, a peak of activity occurs around 13:55, with an average of 206 steps per day.</p>
-<p>This makes me wonder, what does this anonymous person did every day for this two months…? A small walk after lunch? run to take the bus to his second job?…We will never know…God bless rainy Saturday afternoons, coffee and R markdown… ;)</p>
-</div>
-<div id="imputing-missing-values" class="section level2">
+
+<p>This makes me wonder, what does this anonymous person did every day for this two months&hellip;? A small walk after lunch? run to take the bus to his second job?&hellip;We will never know&hellip;God bless rainy Saturday afternoons, coffee and R markdown&hellip; ;)</p>
+
 <h2>Imputing missing values</h2>
+
 <p>As previously mentioned, on this dataset there are multiple NA values. For this question we need to count and report the total number of missing values, task that is accomplished with the following code.</p>
-<pre class="r"><code> total.nas &lt;- act.data %&gt;% 
-                summarize(total=sum(is.na(steps)))</code></pre>
-<p>The result is a total of <code>R total.nas</code> missing values, that have to be replaced someway by a reasonable value.<br />Attending one of the suggestions given in the assignment instructions, I will choose to replace these missing values with the mean value for its correspondent time interval, data that has been already calculated to answer the previous question and stored on the variable “steps.mean”, but that its easier to recalculate than to create a pipeline function to match both dataframes.</p>
-<pre class="r"><code>        new.act.data &lt;- act.data %&gt;% 
+
+<pre><code class="r"> total.nas &lt;- act.data %&gt;% 
+                summarize(total=sum(is.na(steps)))
+</code></pre>
+
+<p>The result is a total of <code>R total.nas</code> missing values, that have to be replaced someway by a reasonable value.<br/>
+Attending one of the suggestions given in the assignment instructions, I will choose to replace these missing values with the mean value for its correspondent time interval, data that has been already calculated to answer the previous question and stored on the variable &ldquo;steps.mean&rdquo;, but that its easier to recalculate than to create a pipeline function to match both dataframes.</p>
+
+<pre><code class="r">        new.act.data &lt;- act.data %&gt;% 
                         group_by(interval) %&gt;% 
-                        mutate(steps=ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))</code></pre>
+                        mutate(steps=ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))
+</code></pre>
+
 <p>With this new data, I used the same code as before on the question one to make the histogram plot.</p>
-<pre class="r"><code>        ## 1) Calculates the total number of steps per day
+
+<pre><code class="r">        ## 1) Calculates the total number of steps per day
         ## Days with no data recorded (only NAs on the steps column) were exclude
         new.steps.total &lt;- new.act.data %&gt;% 
                         filter(!is.na(steps)) %&gt;% 
                         group_by(date) %&gt;% 
                         summarize(total=sum(steps))
-        
+
         ## 2) Creates the histogram
         new.totalSteps.plot &lt;- ggplot(new.steps.total)+ 
                                 geom_histogram(aes(x=total), alpha=0.8, fill=&quot;red&quot;, colour=&quot;white&quot;, binwidth=700)+
                                 labs(title=&quot;Histogram - Total steps per day&quot;)+
-                                labs(x=&quot;Total steps&quot;, y=&quot;Number of days&quot;)</code></pre>
+                                labs(x=&quot;Total steps&quot;, y=&quot;Number of days&quot;)
+</code></pre>
+
 <p>And I used the same code as before to calculate the mean and the median of this new dataset.</p>
-<pre class="r"><code>        new.stats &lt;- new.steps.total %&gt;% 
+
+<pre><code class="r">        new.stats &lt;- new.steps.total %&gt;% 
                         summarize(mean=mean(total), median=median(total))
         new.mean &lt;- format(new.stats$mean, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
-        new.median &lt;- format(new.stats$median, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)</code></pre>
+        new.median &lt;- format(new.stats$median, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
+</code></pre>
+
 <p>From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Because of the chosen method of replacement for the NAs, this results are the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).</p>
-</div>
-<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
+
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+
 <p>Finally, with the new dataset created for the previous question</p>
-<pre class="r"><code>        new.act.data &lt;- new.act.data %&gt;% 
+
+<pre><code class="r">        new.act.data &lt;- new.act.data %&gt;% 
                         mutate(weekday = ifelse(weekdays(as.POSIXct(date))==&quot;Saturday&quot; | weekdays(as.POSIXct(date))==&quot;Sunday&quot;, &quot;weekend&quot;, &quot;weekday&quot;))
-                        
+
         new.steps.mean &lt;- new.act.data %&gt;% 
                                 filter(!is.na(steps)) %&gt;% 
                                 group_by(interval, weekday) %&gt;% 
                                 summarize(total=mean(steps))
-                                
+
         weekSteps.plot &lt;- ggplot(new.steps.mean, aes(x=interval, y=mean))+
                                 geom_line(colour=&quot;darkgray&quot;)+ 
-                                facet_grid(weekday ~ .)</code></pre>
-</div>
-
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-$(document).ready(function () {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-});
-
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
+                                facet_grid(weekday ~ .)
+</code></pre>
 
 </body>
+
 </html>
