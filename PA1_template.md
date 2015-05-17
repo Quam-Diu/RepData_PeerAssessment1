@@ -1,4 +1,10 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: 'Reproducible Research: Peer Assessment 1'
+output:
+  html_document:
+    keep_md: yes
+    self_contained: no
+---
 
 This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University  
 and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, especifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.
@@ -58,7 +64,7 @@ Other point of interest could be the choice of the paremeter **bindwidht = 700**
         labs(x="Total steps", y="Number of days")
 ```
 
-![](PA1_template_files/figure-html/plot.histogram-1.png) 
+![plot of chunk plot.histogram](figure/plot.histogram-1.png) 
 
 We should now calculate the meand and the median of this sample:
 
@@ -115,7 +121,7 @@ To answer this question, the average steps per time interval should be calculate
         annotate("text", x=20+maxValue$interval, y=maxValue$mean, label=time, colour="darkred", size=3, hjust=0)
 ```
 
-![](PA1_template_files/figure-html/plot.timeSeries-1.png) 
+![plot of chunk plot.timeSeries](figure/plot.timeSeries-1.png) 
 
 As we can see, a peak of activity occurs arround 13:55, with an average of 206 steps per day.
 
@@ -159,7 +165,7 @@ With this new data, I used the same code as before on the question one to make t
         labs(x="Total steps", y="Number of days")
 ```
 
-![](PA1_template_files/figure-html/plot.newHistogram-1.png) 
+![plot of chunk plot.newHistogram](figure/plot.newHistogram-1.png) 
 And I used the same code as before to calculate the mean and the median of this new dataset.
 
 
