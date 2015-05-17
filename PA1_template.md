@@ -1,13 +1,7 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  html_document:
-    keep_md: yes
-    self_contained: no
----
+# Reproducible Research: Peer Assessment 1
 
 This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University  
-and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, especifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.
+and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, specifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.
 
 The data was downloaded from the following GitHub repository on may 16th, 2015, at 10:35 am (GMT+6):
 
@@ -23,7 +17,7 @@ It contains the following variables (as described in the same repository):
 
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations on it.
 
-To complete this asigment five questions / problems should be resolved, beginning with the loading in the data to be analized into R. 
+To complete this assignment five questions / problems should be resolved, beginning with the loading in the data to be analyzed into R. 
 
 ## Loading and preprocessing the data
 
@@ -37,16 +31,16 @@ Once downloaded, the data is stored on the R working directory, then the followi
 
 ## What is mean total number of steps taken per day?
 
-The **ggplot2** (wich is my choice to make the plots) and **dplyr** libraries are required to be installed and loaded in order to run the code properly. The following code is used to load these libraries.
+The **ggplot2** (which is my choice to make the plots) and **dplyr** libraries are required to be installed and loaded in order to run the code properly. The following code is used to load these libraries.
 
 
 ```r
         library(dplyr)
         library(ggplot2)
 ```
-First, the sum of the the total steps for each day is calculated. For this calculation a wide number of functions and / or packages could be used. After observing that some methods (for example the function **aggregate**) return a 0 for days in wich all values were NA, my choice was the library **dplyr**, wich excludes those days from the resulting dataframe. This is specially important for the calculations of the mean and the median (evidently to include those zeros would bring different results).  
+First, the sum of the the total steps for each day is calculated. For this calculation a wide number of functions and / or packages could be used. After observing that some methods (for example the function **aggregate**) return a 0 for days in which all values were NA, my choice was the library **dplyr**, which excludes those days from the resulting dataframe. This is specially important for the calculations of the mean and the median (evidently to include those zeros would bring different results).  
 
-Other point of interest could be the choice of the paremeter **bindwidht = 700**, wich simply is one aproximation to the default value range / 30. I replaced this default value to avoid a warning message.
+Other point of interest could be the choice of the parameter **bindwidht = 700**, which simply is one approximation to the default value range / 30. I replaced this default value to avoid a warning message.
 
 
 ```r
@@ -58,15 +52,13 @@ Other point of interest could be the choice of the paremeter **bindwidht = 700**
                         summarize(total=sum(steps))
         
         ## 2) Creates the histogram
-        totalSteps.plot <- ggplot(steps.total)
-        totalSteps.plot + geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
-        labs(title="Histogram - Total steps per day")+
-        labs(x="Total steps", y="Number of days")
+        totalSteps.plot <- ggplot(steps.total)+
+                                geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
+                                labs(title="Histogram - Total steps per day")+
+                                labs(x="Total steps", y="Number of days")
 ```
 
-![plot of chunk plot.histogram](figure/plot.histogram-1.png) 
-
-We should now calculate the meand and the median of this sample:
+We should now calculate the mean and the median of this sample:
 
 - **Mean: ** Is the number that separates the higher half of a data sample from the lower half, is calculated by:
 $$Mean=\frac{1}{n}\sum_{i=1}^{n} x_i$$
@@ -109,27 +101,25 @@ To answer this question, the average steps per time interval should be calculate
         time<-paste(hour,":", minute, ", ", format(maxValue$mean, digits=1), sep="")
         
         ## 2.2) Creates the plot
-        meanSteps.plot <- ggplot(steps.mean, aes(x=interval, y=mean))
-        meanSteps.plot + geom_line(colour="darkgray")+
-        geom_point(aes(color=color))+
-        guides(color=FALSE)+
-        labs(title="Mean steps per time interval")+
-        labs(x="Time interval", y="Mean steps")+
+        meanSteps.plot <- ggplot(steps.mean, aes(x=interval, y=mean))+
+                                geom_line(colour="darkgray")+
+                                geom_point(aes(color=color))+
+                                guides(color=FALSE)+
+                                labs(title="Mean steps per time interval")+
+                                labs(x="Time interval", y="Mean steps")+
         
         ## 2.3) Highlights the maximum value
-        scale_color_manual(values = c(NA, "red"))+
-        annotate("text", x=20+maxValue$interval, y=maxValue$mean, label=time, colour="darkred", size=3, hjust=0)
+                                scale_color_manual(values = c(NA, "red"))+
+                                annotate("text", x=20+maxValue$interval, y=maxValue$mean, label=time, colour="darkred", size=3, hjust=0)
 ```
 
-![plot of chunk plot.timeSeries](figure/plot.timeSeries-1.png) 
+As we can see, a peak of activity occurs around 13:55, with an average of 206 steps per day.
 
-As we can see, a peak of activity occurs arround 13:55, with an average of 206 steps per day.
-
-This makes me wonder, what does this anonymous person did every day for this two months...? A small walk after lunch? run to take the bus to his second job?...We will never know...God bless rainy saturday afternoons, coffee and R markdown... ;)
+This makes me wonder, what does this anonymous person did every day for this two months...? A small walk after lunch? run to take the bus to his second job?...We will never know...God bless rainy Saturday afternoons, coffee and R markdown... ;)
 
 ## Imputing missing values
 
-As previously mentioned, on this dataset there are multiple NA values. For this question we need to count and report the total number of missing values, task that is acomplished with the following code.
+As previously mentioned, on this dataset there are multiple NA values. For this question we need to count and report the total number of missing values, task that is accomplished with the following code.
 
 
 ```r
@@ -138,7 +128,7 @@ As previously mentioned, on this dataset there are multiple NA values. For this 
 ```
 
 The result is a total of `R total.nas` missing values, that have to be replaced someway by a reasonable value.  
-Attending one of the suggestions given in the assigment instructions, I will choose to replace these missig values with the mean value for its correspondant time interval, data that has been already calculated to answer the previous question and stored on the variable "steps.mean", but that its easier to recalculate than to create a pipeline function to match both dataframes.
+Attending one of the suggestions given in the assignment instructions, I will choose to replace these missing values with the mean value for its correspondent time interval, data that has been already calculated to answer the previous question and stored on the variable "steps.mean", but that its easier to recalculate than to create a pipeline function to match both dataframes.
 
 
 ```r
@@ -159,13 +149,12 @@ With this new data, I used the same code as before on the question one to make t
                         summarize(total=sum(steps))
         
         ## 2) Creates the histogram
-        new.totalSteps.plot <- ggplot(new.steps.total)
-        new.totalSteps.plot + geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
-        labs(title="Histogram - Total steps per day")+
-        labs(x="Total steps", y="Number of days")
+        new.totalSteps.plot <- ggplot(new.steps.total)+ 
+                                geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
+                                labs(title="Histogram - Total steps per day")+
+                                labs(x="Total steps", y="Number of days")
 ```
 
-![plot of chunk plot.newHistogram](figure/plot.newHistogram-1.png) 
 And I used the same code as before to calculate the mean and the median of this new dataset.
 
 
@@ -175,7 +164,24 @@ And I used the same code as before to calculate the mean and the median of this 
         new.mean <- format(new.stats$mean, digits= 2, big.mark=",", scientific=FALSE)
         new.median <- format(new.stats$median, digits= 2, big.mark=",", scientific=FALSE)
 ```
-From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Because of the chosen method of replacement for the NAs, this result is the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).
+From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Because of the chosen method of replacement for the NAs, this results are the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Finally, with the new dataset created for the previous question
+
+
+```r
+        new.act.data <- new.act.data %>% 
+                        mutate(weekday = ifelse(weekdays(as.POSIXct(date))=="Saturday" | weekdays(as.POSIXct(date))=="Sunday", "weekend", "weekday"))
+                        
+        new.steps.mean <- new.act.data %>% 
+                                filter(!is.na(steps)) %>% 
+                                group_by(interval, weekday) %>% 
+                                summarize(total=mean(steps))
+                                
+        weekSteps.plot <- ggplot(new.steps.mean, aes(x=interval, y=mean))+
+                                geom_line(colour="darkgray")+ 
+                                facet_grid(weekday ~ .)
+```
 
