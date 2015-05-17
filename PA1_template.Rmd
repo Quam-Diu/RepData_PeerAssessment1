@@ -205,8 +205,14 @@ Finally, with the new dataset created for the previous question we will compare 
                         summarize(total=sum(steps)) %>% 
                         group_by(weekday) %>% 
                         summarize(mean=mean(total))
-        weekday.mean <- format(week.stats[week.stats$weekday=="weekday", 2], digits= 2, big.mark=",", scientific=FALSE)
-        weekend.mean <- format(week.stats[week.stats$weekday=="weekend", 2], digits= 2, big.mark=",", scientific=FALSE)
+        weekday.mean <- format(week.stats[week.stats$weekday=="weekday", 2], 
+                                digits= 2, 
+                                big.mark=",", 
+                                scientific=FALSE)
+        weekend.mean <- format(week.stats[week.stats$weekday=="weekend", 2], 
+                                digits= 2, 
+                                big.mark=",", 
+                                scientific=FALSE)
 
         more.100 <- new.steps.mean %>% 
                         filter(mean>=100) %>% 

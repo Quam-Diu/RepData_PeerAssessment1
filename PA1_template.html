@@ -398,8 +398,14 @@ Attending one of the suggestions given in the assignment instructions, I will ch
                         summarize(total=sum(steps)) %&gt;% 
                         group_by(weekday) %&gt;% 
                         summarize(mean=mean(total))
-        weekday.mean &lt;- format(week.stats[week.stats$weekday==&quot;weekday&quot;, 2], digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
-        weekend.mean &lt;- format(week.stats[week.stats$weekday==&quot;weekend&quot;, 2], digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
+        weekday.mean &lt;- format(week.stats[week.stats$weekday==&quot;weekday&quot;, 2], 
+                                digits= 2, 
+                                big.mark=&quot;,&quot;, 
+                                scientific=FALSE)
+        weekend.mean &lt;- format(week.stats[week.stats$weekday==&quot;weekend&quot;, 2], 
+                                digits= 2, 
+                                big.mark=&quot;,&quot;, 
+                                scientific=FALSE)
 
         more.100 &lt;- new.steps.mean %&gt;% 
                         filter(mean&gt;=100) %&gt;% 
