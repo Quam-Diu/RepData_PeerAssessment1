@@ -1,10 +1,4 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  html_document:
-    keep_md: yes
-    self_contained: no
----
+# Reproducible Research: Peer Assessment 1
 
 This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University  
 and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, especifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.
@@ -30,7 +24,8 @@ To complete this asigment five questions / problems should be resolved, beginnin
 Once downloaded, the data is stored on the R working directory, then the following code is used to load it into R and store into an R variable called "act.Data". 
 **Note:** This and the following code was written using R version 3.1.2, and R-Studio version 0.98, running on MacOS X 10.1.1.
 
-````{R loading.data}
+
+```r
         act.data <- read.csv(unzip("activity.zip"))
 ```
 
@@ -38,7 +33,8 @@ Once downloaded, the data is stored on the R working directory, then the followi
 
 The **ggplot2** (wich is my choice to make the plots) and **dplyr** libraries are required to be installed and loaded in order to run the code properly. The following code is used to load these libraries.
 
-````{R libraries, message=FALSE, warning=FALSE}
+
+```r
         library(dplyr)
         library(ggplot2)
 ```
@@ -46,7 +42,8 @@ First, the sum of the the total steps for each day is calculated. For this calcu
 
 Other point of interest could be the choice of the paremeter **bindwidht = 700**, wich simply is one aproximation to the default value range / 30. I replaced this default value to avoid a warning message.
 
-```{R plot.histogram}
+
+```r
         ## 1) Calculates the total number of steps per day
         ## Days with no data recorded (only NAs on the steps column) were exclude
         steps.total <- act.data %>% 
@@ -59,7 +56,9 @@ Other point of interest could be the choice of the paremeter **bindwidht = 700**
         totalSteps.plot + geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
         labs(title="Histogram - Total steps per day")+
         labs(x="Total steps", y="Number of days")
-````
+```
+
+![](PA1_template_files/figure-html/plot.histogram-1.png) 
 
 We should now calculate the meand and the median of this sample:
 
@@ -72,20 +71,22 @@ $$\operatorname{P}(X\leq m) \geq \frac{1}{2}\text{ and }\operatorname{P}(X\geq m
 
 These statistics are calculated using the following R code:
 
-```{R basicStats}
+
+```r
         stats <- steps.total %>% 
                         summarize(mean=mean(total), median=median(total))
         mean <- format(stats$mean, digits= 2, big.mark=",", scientific=FALSE)
         median <- format(stats$median, digits= 2, big.mark=",", scientific=FALSE)
 ```
 
-From were we obtain a mean of `r mean` and a median of `r median` steps per day.
+From were we obtain a mean of 10,766 and a median of 10,765 steps per day.
 
 ## What is the average daily activity pattern?
 
 To answer this question, the average steps per time interval should be calculated first, and then ploted versus the time interval.
 
-```{R plot.timeSeries}
+
+```r
         ## 1) Calculate the average steps per time interval, excluding data with NA values
         steps.mean <- act.data %>% 
                         filter(!is.na(steps)) %>% 
@@ -114,7 +115,9 @@ To answer this question, the average steps per time interval should be calculate
         annotate("text", x=20+maxValue$interval, y=maxValue$mean, label=time, colour="darkred", size=3, hjust=0)
 ```
 
-As we can see, a peak of activity occurs arround `r paste(hour,":", minute, sep="")`, with an average of `r format(maxValue$mean, digits=2)` steps per day.
+![](PA1_template_files/figure-html/plot.timeSeries-1.png) 
+
+As we can see, a peak of activity occurs arround 13:55, with an average of 206 steps per day.
 
 This makes me wonder, what does this anonymous person did every day for this two months...? A small walk after lunch? run to take the bus to his second job?...We will never know...God bless rainy saturday afternoons, coffee and R markdown... ;)
 
@@ -122,7 +125,8 @@ This makes me wonder, what does this anonymous person did every day for this two
 
 As previously mentioned, on this dataset there are multiple NA values. For this question we need to count and report the total number of missing values, task that is acomplished with the following code.
 
-```{R missing}
+
+```r
  total.nas <- act.data %>% 
                 summarize(total=sum(is.na(steps)))
 ```
@@ -130,7 +134,8 @@ As previously mentioned, on this dataset there are multiple NA values. For this 
 The result is a total of `R total.nas` missing values, that have to be replaced someway by a reasonable value.  
 Attending one of the suggestions given in the assigment instructions, I will choose to replace these missig values with the mean value for its correspondant time interval, data that has been already calculated to answer the previous question and stored on the variable "steps.mean", but that its easier to recalculate than to create a pipeline function to match both dataframes.
 
-```{R newData}
+
+```r
         new.act.data <- act.data %>% 
                         group_by(interval) %>% 
                         mutate(steps=ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))
@@ -138,7 +143,8 @@ Attending one of the suggestions given in the assigment instructions, I will cho
 
 With this new data, I used the same code as before on the question one to make the histogram plot.
 
-```{R plot.newHistogram}
+
+```r
         ## 1) Calculates the total number of steps per day
         ## Days with no data recorded (only NAs on the steps column) were exclude
         new.steps.total <- new.act.data %>% 
@@ -152,15 +158,18 @@ With this new data, I used the same code as before on the question one to make t
         labs(title="Histogram - Total steps per day")+
         labs(x="Total steps", y="Number of days")
 ```
+
+![](PA1_template_files/figure-html/plot.newHistogram-1.png) 
 And I used the same code as before to calculate the mean and the median of this new dataset.
 
-```{R newbasicStats}
+
+```r
         new.stats <- new.steps.total %>% 
                         summarize(mean=mean(total), median=median(total))
         new.mean <- format(new.stats$mean, digits= 2, big.mark=",", scientific=FALSE)
         new.median <- format(new.stats$median, digits= 2, big.mark=",", scientific=FALSE)
 ```
-From were we obtain a mean of `r new.mean` and a median of `r new.median` steps per day. Because of the chosen method of replacement for the NAs, this result is the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).
+From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Because of the chosen method of replacement for the NAs, this result is the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).
 
 ## Are there differences in activity patterns between weekdays and weekends?
 

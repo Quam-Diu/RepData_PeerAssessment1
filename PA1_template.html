@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<title>Reproducible Research: Peer Assessment 1</title>
+
+<script src="PA1_template_files/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="PA1_template_files/bootstrap-2.3.2/css/bootstrap.min.css" rel="stylesheet" />
+<link href="PA1_template_files/bootstrap-2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" />
+<script src="PA1_template_files/bootstrap-2.3.2/js/bootstrap.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="PA1_template_files/highlight/default.css"
+      type="text/css" />
+<script src="PA1_template_files/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div id="header">
+<h1 class="title">Reproducible Research: Peer Assessment 1</h1>
+</div>
+
+
+<p>This report is made to comply with the first peer assessment required in the course Reproducible Research, by the John Hopkins University<br />and Coursera. Two months of data collected from an anonymous user of an activity monitoring device is used, especifically the number of steps taken in 5 minute intervals each day during the months of October and November of 2012.</p>
+<p>The data was downloaded from the following GitHub repository on may 16th, 2015, at 10:35 am (GMT+6):</p>
+<p><a href="https://github.com/rdpeng/RepData_PeerAssessment1/blob/master/activity.zip">https://github.com/rdpeng/RepData_PeerAssessment1/blob/master/activity.zip</a></p>
+<p>It contains the following variables (as described in the same repository):</p>
+<ul>
+<li><p>steps: Number of steps taking in a 5-minute interval (missing values are coded as NA)</p></li>
+<li><p>date: The date on which the measurement was taken in YYYY-MM-DD format</p></li>
+<li><p>interval: Identifier for the 5-minute interval in which measurement was taken</p></li>
+</ul>
+<p>The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations on it.</p>
+<p>To complete this asigment five questions / problems should be resolved, beginning with the loading in the data to be analized into R.</p>
+<div id="loading-and-preprocessing-the-data" class="section level2">
+<h2>Loading and preprocessing the data</h2>
+<p>Once downloaded, the data is stored on the R working directory, then the following code is used to load it into R and store into an R variable called “act.Data”. <strong>Note:</strong> This and the following code was written using R version 3.1.2, and R-Studio version 0.98, running on MacOS X 10.1.1.</p>
+<pre class="r"><code>        act.data &lt;- read.csv(unzip(&quot;activity.zip&quot;))</code></pre>
+</div>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
+<h2>What is mean total number of steps taken per day?</h2>
+<p>The <strong>ggplot2</strong> (wich is my choice to make the plots) and <strong>dplyr</strong> libraries are required to be installed and loaded in order to run the code properly. The following code is used to load these libraries.</p>
+<pre class="r"><code>        library(dplyr)
+        library(ggplot2)</code></pre>
+<p>First, the sum of the the total steps for each day is calculated. For this calculation a wide number of functions and / or packages could be used. After observing that some methods (for example the function <strong>aggregate</strong>) return a 0 for days in wich all values were NA, my choice was the library <strong>dplyr</strong>, wich excludes those days from the resulting dataframe. This is specially important for the calculations of the mean and the median (evidently to include those zeros would bring different results).</p>
+<p>Other point of interest could be the choice of the paremeter <strong>bindwidht = 700</strong>, wich simply is one aproximation to the default value range / 30. I replaced this default value to avoid a warning message.</p>
+<pre class="r"><code>        ## 1) Calculates the total number of steps per day
+        ## Days with no data recorded (only NAs on the steps column) were exclude
+        steps.total &lt;- act.data %&gt;% 
+                        filter(!is.na(steps)) %&gt;% 
+                        group_by(date) %&gt;% 
+                        summarize(total=sum(steps))
+        
+        ## 2) Creates the histogram
+        totalSteps.plot &lt;- ggplot(steps.total)
+        totalSteps.plot + geom_histogram(aes(x=total), alpha=0.8, fill=&quot;red&quot;, colour=&quot;white&quot;, binwidth=700)+
+        labs(title=&quot;Histogram - Total steps per day&quot;)+
+        labs(x=&quot;Total steps&quot;, y=&quot;Number of days&quot;)</code></pre>
+<p><img src="PA1_template_files/figure-html/plot.histogram-1.png" /></p>
+<p>We should now calculate the meand and the median of this sample:</p>
+<ul>
+<li><p><strong>Mean: </strong> Is the number that separates the higher half of a data sample from the lower half, is calculated by: <span class="math">\[Mean=\frac{1}{n}\sum_{i=1}^{n} x_i\]</span></p></li>
+<li><p><strong>Median: </strong> Is a real number m that, for any probability distribution, satisfies the inequalities:</p></li>
+</ul>
+<p><span class="math">\[\operatorname{P}(X\leq m) \geq \frac{1}{2}\text{ and }\operatorname{P}(X\geq m) \geq \frac{1}{2}\,\!\]</span></p>
+<p>These statistics are calculated using the following R code:</p>
+<pre class="r"><code>        stats &lt;- steps.total %&gt;% 
+                        summarize(mean=mean(total), median=median(total))
+        mean &lt;- format(stats$mean, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
+        median &lt;- format(stats$median, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)</code></pre>
+<p>From were we obtain a mean of 10,766 and a median of 10,765 steps per day.</p>
+</div>
+<div id="what-is-the-average-daily-activity-pattern" class="section level2">
+<h2>What is the average daily activity pattern?</h2>
+<p>To answer this question, the average steps per time interval should be calculated first, and then ploted versus the time interval.</p>
+<pre class="r"><code>        ## 1) Calculate the average steps per time interval, excluding data with NA values
+        steps.mean &lt;- act.data %&gt;% 
+                        filter(!is.na(steps)) %&gt;% 
+                        group_by(interval) %&gt;% 
+                        summarize(mean=mean(steps))
+        steps.mean &lt;- steps.mean %&gt;% 
+                        mutate(color = (max(mean) == mean))
+        
+        ## 2) Creates the plot
+        ## 2.1) Finds the maximum and converts its time interval to 24H format
+        maxValue &lt;- steps.mean[steps.mean$mean==max(steps.mean$mean),]
+        hour &lt;- as.integer(maxValue$interval/60)
+        minute &lt;- 60*(maxValue$interval/60 - hour)
+        time&lt;-paste(hour,&quot;:&quot;, minute, &quot;, &quot;, format(maxValue$mean, digits=1), sep=&quot;&quot;)
+        
+        ## 2.2) Creates the plot
+        meanSteps.plot &lt;- ggplot(steps.mean, aes(x=interval, y=mean))
+        meanSteps.plot + geom_line(colour=&quot;darkgray&quot;)+
+        geom_point(aes(color=color))+
+        guides(color=FALSE)+
+        labs(title=&quot;Mean steps per time interval&quot;)+
+        labs(x=&quot;Time interval&quot;, y=&quot;Mean steps&quot;)+
+        
+        ## 2.3) Highlights the maximum value
+        scale_color_manual(values = c(NA, &quot;red&quot;))+
+        annotate(&quot;text&quot;, x=20+maxValue$interval, y=maxValue$mean, label=time, colour=&quot;darkred&quot;, size=3, hjust=0)</code></pre>
+<p><img src="PA1_template_files/figure-html/plot.timeSeries-1.png" /></p>
+<p>As we can see, a peak of activity occurs arround 13:55, with an average of 206 steps per day.</p>
+<p>This makes me wonder, what does this anonymous person did every day for this two months…? A small walk after lunch? run to take the bus to his second job?…We will never know…God bless rainy saturday afternoons, coffee and R markdown… ;)</p>
+</div>
+<div id="imputing-missing-values" class="section level2">
+<h2>Imputing missing values</h2>
+<p>As previously mentioned, on this dataset there are multiple NA values. For this question we need to count and report the total number of missing values, task that is acomplished with the following code.</p>
+<pre class="r"><code> total.nas &lt;- act.data %&gt;% 
+                summarize(total=sum(is.na(steps)))</code></pre>
+<p>The result is a total of <code>R total.nas</code> missing values, that have to be replaced someway by a reasonable value.<br />Attending one of the suggestions given in the assigment instructions, I will choose to replace these missig values with the mean value for its correspondant time interval, data that has been already calculated to answer the previous question and stored on the variable “steps.mean”, but that its easier to recalculate than to create a pipeline function to match both dataframes.</p>
+<pre class="r"><code>        new.act.data &lt;- act.data %&gt;% 
+                        group_by(interval) %&gt;% 
+                        mutate(steps=ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))</code></pre>
+<p>With this new data, I used the same code as before on the question one to make the histogram plot.</p>
+<pre class="r"><code>        ## 1) Calculates the total number of steps per day
+        ## Days with no data recorded (only NAs on the steps column) were exclude
+        new.steps.total &lt;- new.act.data %&gt;% 
+                        filter(!is.na(steps)) %&gt;% 
+                        group_by(date) %&gt;% 
+                        summarize(total=sum(steps))
+        
+        ## 2) Creates the histogram
+        new.totalSteps.plot &lt;- ggplot(new.steps.total)
+        new.totalSteps.plot + geom_histogram(aes(x=total), alpha=0.8, fill=&quot;red&quot;, colour=&quot;white&quot;, binwidth=700)+
+        labs(title=&quot;Histogram - Total steps per day&quot;)+
+        labs(x=&quot;Total steps&quot;, y=&quot;Number of days&quot;)</code></pre>
+<p><img src="PA1_template_files/figure-html/plot.newHistogram-1.png" /> And I used the same code as before to calculate the mean and the median of this new dataset.</p>
+<pre class="r"><code>        new.stats &lt;- new.steps.total %&gt;% 
+                        summarize(mean=mean(total), median=median(total))
+        new.mean &lt;- format(new.stats$mean, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)
+        new.median &lt;- format(new.stats$median, digits= 2, big.mark=&quot;,&quot;, scientific=FALSE)</code></pre>
+<p>From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Because of the chosen method of replacement for the NAs, this result is the same as the obtained before (however please note that the result of the first question could be different if the days where all data is missing were taken into account for the first calculation).</p>
+</div>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
+<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
