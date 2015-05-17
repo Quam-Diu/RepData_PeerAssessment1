@@ -60,10 +60,17 @@ Other point of interest could be the choice of the parameter **bindwidht = 700**
         
         ## 2) Creates the histogram
         totalSteps.plot <- ggplot(steps.total)+
-                                geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
+                                geom_histogram(aes(x=total), 
+                                        alpha=0.8, 
+                                        fill="red", 
+                                        colour="white", 
+                                        binwidth=700)+
                                 labs(title="Histogram - Total steps per day")+
                                 labs(x="Total steps", y="Number of days")
+        print(totalSteps.plot)
 ```
+
+<img src="figure/plot.histogram-1.png" title="plot of chunk plot.histogram" alt="plot of chunk plot.histogram" style="display: block; margin: auto;" />
 
 We should now calculate the mean and the median of this sample:
 
@@ -108,8 +115,17 @@ To answer this question, the average steps per time interval should be calculate
         
         ## 2.3) Highlights the maximum value
                                 scale_color_manual(values = c(NA, "red"))+
-                                annotate("text", x=20+maxValue$interval, y=maxValue$mean, label=time, colour="darkred", size=3, hjust=0)
+                                annotate("text", 
+                                        x=20+maxValue$interval, 
+                                        y=maxValue$mean, 
+                                        label=time, 
+                                        colour="darkred", 
+                                        size=3, 
+                                        hjust=0)
+        print(meanSteps.plot)
 ```
+
+<img src="figure/plot.timeSeries-1.png" title="plot of chunk plot.timeSeries" alt="plot of chunk plot.timeSeries" style="display: block; margin: auto;" />
 
 As we can see, a peak of activity occurs around 13:55, with an average of 206 steps per day.
 
@@ -125,14 +141,16 @@ As previously mentioned, on this dataset there are multiple NA values. For this 
                 summarize(total=sum(is.na(steps)))
 ```
 
-The result is a total of `R total.nas` missing values, that have to be replaced someway by a reasonable value.  
+The result is a total of 2304 missing values, that have to be replaced someway by a reasonable value.  
 Attending one of the suggestions given in the assignment instructions, I will choose to replace these missing values with the mean value for its correspondent time interval, data that has been already calculated to answer the previous question and stored on the variable "steps.mean", but that its easier to recalculate than to create a pipeline function to match both dataframes.
 
 
 ```r
         new.act.data <- act.data %>% 
                         group_by(interval) %>% 
-                        mutate(steps=ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))
+                        mutate(steps=ifelse(is.na(steps), 
+                                                mean(steps, na.rm=TRUE), 
+                                                steps))
 ```
 
 With this new data, I used the same code as before on the question one to make the histogram plot.
@@ -148,10 +166,17 @@ With this new data, I used the same code as before on the question one to make t
         
         ## 2) Creates the histogram
         new.totalSteps.plot <- ggplot(new.steps.total)+ 
-                                geom_histogram(aes(x=total), alpha=0.8, fill="red", colour="white", binwidth=700)+
+                                geom_histogram(aes(x=total), 
+                                        alpha=0.8, 
+                                        fill="red", 
+                                        colour="white", 
+                                        binwidth=700)+
                                 labs(title="Histogram - Total steps per day")+
                                 labs(x="Total steps", y="Number of days")
+        print(new.totalSteps.plot)
 ```
+
+<img src="figure/plot.newHistogram-1.png" title="plot of chunk plot.newHistogram" alt="plot of chunk plot.newHistogram" style="display: block; margin: auto;" />
 
 And I used the same code as before to calculate the mean and the median of this new dataset.
 
@@ -167,19 +192,53 @@ From were we obtain a mean of 10,766 and a median of 10,766 steps per day. Becau
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-Finally, with the new dataset created for the previous question
+Finally, with the new dataset created for the previous question we will compare the results on weekdays and weekends.
 
 
 ```r
+        ## 1) Add factor to separate the data
         new.act.data <- new.act.data %>% 
-                        mutate(weekday = ifelse(weekdays(as.POSIXct(date))=="Saturday" | weekdays(as.POSIXct(date))=="Sunday", "weekend", "weekday"))
+                        mutate(weekday = ifelse(weekdays(as.POSIXct(date))=="Saturday" |
+                                                weekdays(as.POSIXct(date))=="Sunday", 
+                                                "weekend", 
+                                                "weekday")
+                        )
                         
+        ## 2) Calculates the mean steps per time interval            
         new.steps.mean <- new.act.data %>% 
-                                filter(!is.na(steps)) %>% 
                                 group_by(interval, weekday) %>% 
-                                summarize(total=mean(steps))
+                                summarize(mean=mean(steps))
                                 
+        ## 3) Makes the plot        
         weekSteps.plot <- ggplot(new.steps.mean, aes(x=interval, y=mean))+
                                 geom_line(colour="darkgray")+ 
                                 facet_grid(weekday ~ .)
+        print(weekSteps.plot)
 ```
+
+<img src="figure/plot.weekday-1.png" title="plot of chunk plot.weekday" alt="plot of chunk plot.weekday" style="display: block; margin: auto;" />
+
+```r
+        ## 4) Calculates some final summary data
+        week.stats <- new.act.data %>% 
+                        group_by(date, weekday) %>%
+                        summarize(total=sum(steps)) %>% 
+                        group_by(weekday) %>% 
+                        summarize(mean=mean(total))
+        weekday.mean <- format(week.stats[week.stats$weekday=="weekday", 2], digits= 2, big.mark=",", scientific=FALSE)
+        weekend.mean <- format(week.stats[week.stats$weekday=="weekend", 2], digits= 2, big.mark=",", scientific=FALSE)
+
+        more.100 <- new.steps.mean %>% 
+                        filter(mean>=100) %>% 
+                        count(weekday)
+        weekday.100 <- more.100[more.100$weekday=="weekday", 2]
+        weekend.100 <- more.100[more.100$weekday=="weekend", 2]
+```
+
+From this two plots, we can observe that the shape of the time series is different from weekdays to weekends:  
+
+ - First, we don't observe a hight peak of activity on weekends around 2:00 pm.  
+ - The number of time intervals with a mean above 100 steps on weekends is 32, while on weekdays is 15.  
+ - Finally, the mean steps on weekdays is 10,256, meanwhile on weekends is 12,202.
+ 
+ In short, we can conclude that on average the weekends are more active, but on weekedays there are intervals with higher intensity.
