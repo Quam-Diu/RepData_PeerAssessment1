@@ -243,8 +243,8 @@ Finally, with the new dataset created for the previous question we will compare 
 
 From this two plots, we can observe that the shape of the time series is different from weekdays to weekends:  
 
- - First, we don't observe a hight peak of activity on weekends around 2:00 pm.  
- - The number of time intervals with a mean above 100 steps on weekends is 32, while on weekdays is 15.  
+ - First, we don't observe a hight peak of activity on weekends around 2:00 pm.
+ - The number of time intervals with a mean above 100 steps on weekends is 32, while on weekdays is 15.
  - Finally, the mean steps on weekdays is 10,256, meanwhile on weekends is 12,202.
  
- In short, we can conclude that on average the weekends are more active, but on weekedays there are intervals with higher intensity.
+In short, we can conclude that on average the weekends are more active, but on weekedays there are intervals with higher intensity.
